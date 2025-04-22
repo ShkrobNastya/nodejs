@@ -10,13 +10,15 @@ const tokenMiddleware = asyncHandler(async (req, res, next) => {
     try {
       jwt.verify(token, process.env.JWT_SECRET_KEY);
       next();
-    } catch (error) {
-      res.status(401);
-      throw new Error("Not authorized, token failed");
+    } catch (err) {
+      const error = new Error("Not authorized, token failed");
+      error.status = 401;
+      return next(error);
     }
   } else {
-    res.status(401);
-    throw new Error("Not authorized, no token");
+    const error = new Error("Not authorized, no token");
+    error.status = 401;
+    return next(error);
   }
 });
 
